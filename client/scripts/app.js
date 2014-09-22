@@ -7,7 +7,8 @@ var app = {
       type: 'POST',
       data: JSON.stringify(data),
       contentType: 'application/json',
-      success: function(d){ consol.el},
+      success: function(d) {
+        console.log("POST successful");},
       error: function(jqXHR, status, error) {
         console.log(error);
       }
@@ -19,7 +20,9 @@ var app = {
       type: 'GET',
       success: function(d){
         // do stuff
-        console.log},
+        var clean = JSON.stringify(d);
+        console.log(clean);
+      },
       error: function(jqXHR, status, error) {
         console.log(error);
       }
