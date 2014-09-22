@@ -2,10 +2,16 @@
 var app = {
   init: function(){
     //handlers
+
     $('.fetch').on('click', function() {
       app.fetch();
     });
+
+    app.svg = d3.select('#canvas').append('svg')
+      .attr('height', $(window).height() * 0.75)
+      .attr('width', 500);
   },
+
   send: function(data){
     $.ajax({
       url: this.server,
@@ -19,6 +25,7 @@ var app = {
       }
     })
   },
+
   fetch: function(){
     $.ajax({
       url: this.server,
@@ -33,7 +40,9 @@ var app = {
       }
     })
   },
+
   server: 'https://api.parse.com/1/classes/chatterbox',
+
   clean: function(message) {
     //cleans one message
 
@@ -47,13 +56,9 @@ var app = {
       cleaned.objectId = message.objectId;
       cleaned.updatedAt = message.updatedAt;
 
-      console.log('dirty', message);
-      console.log('clean', cleaned);
-
       return cleaned;
     } else {
       return null;
     }
   }
-
 };
