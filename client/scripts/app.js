@@ -3,7 +3,7 @@ var app = {
   init: function(){},
   send: function(data){
     $.ajax({
-      url: 'https://api.parse.com/1/classes/chatterbox',
+      url: this.server,
       type: 'POST',
       data: JSON.stringify(data),
       contentType: 'application/json',
@@ -13,5 +13,18 @@ var app = {
       }
     })
   },
-  fetch: function(){}
+  fetch: function(){
+    $.ajax({
+      url: this.server,
+      type: 'GET',
+      success: function(d){
+        // do stuff
+        console.log},
+      error: function(jqXHR, status, error) {
+        console.log(error);
+      }
+    })
+  },
+  server: 'https://api.parse.com/1/classes/chatterbox'
+
 };
