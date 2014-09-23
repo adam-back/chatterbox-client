@@ -39,6 +39,11 @@ var app = {
       app.send(message);
       setTimeout(function(){app.fetch()}, 1000);
       $('input').val("");
+    });
+
+    $('.room-selector').on('change', function(e){
+      e.preventDefault();
+      app.fetch();
     })
   },
 
@@ -57,10 +62,22 @@ var app = {
   },
 
   fetch: function(){
+    var where = {
+      updatedAt:{
+        $gte: {
+          __type: 'Date',
+          iso: app.lastHour()
+        }
+      }
+    };
+    var room = $('.room-selector').val();
+    if (!(room === 'all' || room === undefined || room === '')){
+      where.roomname = room;
+    }
     $.ajax({
       url: this.server,
       type: 'GET',
-      data: 'where={"updatedAt":{"$gte":{"__type":"Date","iso":"' + app.lastHour() +'"}}}&order=-createdAt',
+      data: 'where=' + JSON.stringify(where) + '&order=-createdAt',
       contentType: 'application/json',
       success: app.update,
       error: function(jqXHR, status, error) {
@@ -73,13 +90,19 @@ var app = {
 
   clean: function(message) {
     //cleans one message
-
-    if(message.hasOwnProperty('text') && message.hasOwnProperty('roomname') && message.hasOwnProperty('username')) {
+    if(message.hasOwnProperty('room') && !message.hasOwnProperty('roomname')){
+      message.roomname = message.room;
+      delete message.room;
+    }
+    if(message.hasOwnProperty('text') && message.hasOwnProperty('roomname') && message.hasOwnProperty('username') &&
+       message.text     !== undefined && message.text     !== 'undefined' && $.trim(message.text)     !== '' &&
+       message.roomname !== undefined && message.roomname !== 'undefined' && $.trim(message.roomname) !== '' &&
+       message.username !== undefined && message.username !== 'undefined' && $.trim(message.username) !== ''){
       var cleaned = {};
       // start with dirty text, e.g., message.text
-      cleaned.text = $('<span></span>').text(message.text).html();
-      cleaned.roomname = $('<span></span>').text(message.roomname).html();
-      cleaned.username = $('<span></span>').text(message.username).html();
+      cleaned.text = $('<span></span>').text($.trim(_.escape(message.text))).html();
+      cleaned.roomname = $('<span></span>').text($.trim(_.escape(message.roomname))).html();
+      cleaned.username = $('<span></span>').text($.trim(_.escape(message.username))).html();
       cleaned.createdAt = message.createdAt;
       cleaned.objectId = message.objectId;
       cleaned.updatedAt = message.updatedAt;
@@ -100,8 +123,11 @@ var app = {
         data[i] = clean;
       } else {
         data.splice(i, 1);
+        i--;
       }
     }
+
+    app.updateRoomSelector(data);
 
     app.svg.attr('height', data.length * app.messageHeight);
 
@@ -152,7 +178,9 @@ var app = {
 
     //Room Name
     messages.select('.roomname')
-    .text(function(d){return "Room Name: " + d['roomname'] })
+    .text(function(d){
+      return "Room Name: " + d['roomname'];
+    })
     .attr('transform', function(d,i){return 'translate(300,60)';})
     .attr('fill', 'grey').attr('size', '8');
 
@@ -208,5 +236,70 @@ var app = {
   removeFriend: function(username) {
     delete app.friends[username];
     return app.friends;
+  },
+
+  updateRoomSelector: function(data){
+    var el = $('.room-selector');
+    var oldValue = el.val();
+    el.find('option')
+      .remove()
+      .end()
+      .append('<option value="all">All Rooms</option>')
+    var rooms = {};
+    app.roomNames = [];
+    for (var i = 0; i < data.length; i++){
+      if (data[i].roomname !== undefined && $.trim(data[i].roomname) !== '')
+      rooms[$.trim(data[i].roomname)] = true;
+    }
+    for (var key in rooms){
+      app.roomNames.push(key);
+    }
+    app.roomNames = app.roomNames.sort();
+    for (i = 0; i < app.roomNames.length; i++){
+      el.append('<option value="' + app.roomNames[i] + '">' + app.roomNames[i] + '</option>')
+    }
+    if (app.roomNames.indexOf(oldValue) >= 0){
+      el.val(oldValue);
+    } else {
+      el.val('all');
+    }
   }
+
+
+
 };
+
+
+
+
+(function($){
+  $.fn.scrollFixed = function(params){
+    params = $.extend( {appearAfterDiv: 0, hideBeforeDiv: 0}, params);
+    var element = $(this);
+
+    if(params.appearAfterDiv) {
+      var distanceTop = element.offset().top + $(params.appearAfterDiv).outerHeight(true) + element.outerHeight(true);
+    } else {
+      var distanceTop = element.offset().top;
+    }
+
+    if(params.hideBeforeDiv) {
+      var bottom = $(params.hideBeforeDiv).offset().top - element.outerHeight(true) - 10;
+    } else {
+      var bottom = 200000;
+    }
+
+    $(window).scroll(function(){
+      if( $(window).scrollTop() > distanceTop && $(window).scrollTop() < bottom ) {
+        element.css({'position':'fixed', 'top':'5px'});
+      } else {
+        element.css({'position':'static'});
+      }
+    });
+  };
+})(jQuery);
+
+
+
+
+

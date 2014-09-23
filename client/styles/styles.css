@@ -92,6 +92,13 @@ image {
     width: 680px;
     overflow-x: hidden;
 }
+
+#sidebar {
+    width: 200px;
+    left: 10px;
+    top: 10px;
+    position: absolute;
+}
 /*.message {
     stroke: lightblue;
     stroke-width: 1px;
