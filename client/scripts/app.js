@@ -107,9 +107,9 @@ var app = {
       var cleaned = {};
       // start with dirty text, e.g., message.text
       cleaned.text = message.text;
-      cleaned.roomname = message.roomname;
-      cleaned.username = message.username;
-      cleaned.createdAt = message.createdAt;
+      cleaned.roomname = _.escape(message.roomname);
+      cleaned.username = _.escape(message.username);
+      cleaned.createdAt = _.escape(message.createdAt);
       cleaned.objectId = message.objectId;
       cleaned.updatedAt = message.updatedAt;
       cleaned.friend = app.hasFriend(cleaned.username);
@@ -321,9 +321,6 @@ var app = {
 
 
 };
-
-
-
 
 (function($){
   $.fn.scrollFixed = function(params){
