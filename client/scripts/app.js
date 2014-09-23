@@ -351,6 +351,8 @@ var app = {
       app.updateRoomSelector();
       //change option on bar to reflect room change using jQuery, re 324, 343
       $('.room-selector').val(roomName);
+      //updates page to reflect new room name
+      app.fetch();
   }
 
 
