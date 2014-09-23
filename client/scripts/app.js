@@ -94,8 +94,9 @@ var app = {
         data.splice(i, 1);
       }
     }
-
+    // update
     var messages = app.svg.selectAll('.message').data(data, function(d) { return d.objectId;});
+    //entering
     var enteringMessages = messages.enter()
       .append('g').attr('class', 'message')
 
@@ -106,31 +107,62 @@ var app = {
     //friend icon
     enteringMessages
       .append('image')
-      .attr('xlink:href', function(d) {
-        if(d.friend) {
-          return 'images/delete_profile-128.png'
-        } else {
-          return 'images/add_friend-128.png'
-        }
-      })
-      .attr('class', 'add')
       .attr('width', '15')
       .attr('height', '15');
 
     //username
     enteringMessages
-      .append('text').attr('class', 'username').attr('font-weight', function(d) {if(d.friend) {return "800";} else {return '400';}});
+      .append('text').attr('class', 'username');
 
     //roomname
     enteringMessages
       .append('text').attr('class', 'roomname');
 
+    //update + entering
+    //message text
     messages
       .attr('transform', function(d,i){return 'translate(0,' + (102 * (i + 1)) + ')';})
-      .select('.text').text(function(d){return "'" + d['text'] + "'"}).attr('transform', 'translate(50, 30)');
-      messages.select('.username').text(function(d){return d['username']}).attr('transform', 'translate(20, 12)');
-      messages.select('.roomname').text(function(d){return "Room Name: " + d['roomname'] }).attr('transform', function(d,i){return 'translate(300,60)';}).attr('fill', 'grey').attr('size', '8');
+      .select('.text')
+      .text(function(d){return "'" + d['text'] + "'"})
+      .attr('transform', 'translate(50, 30)');
 
+    //username
+    messages.select('.username')
+    .text(function(d){return d['username']})
+    .attr('transform', 'translate(20, 12)')
+    .attr('font-weight',
+      function(d) {
+        if(d.friend) {
+          return "800";
+        } else {
+          return '400';
+        }
+      });
+
+    //Room Name
+    messages.select('.roomname')
+    .text(function(d){return "Room Name: " + d['roomname'] })
+    .attr('transform', function(d,i){return 'translate(300,60)';})
+    .attr('fill', 'grey').attr('size', '8');
+
+    // add/remove friend image
+    messages.select('image')
+      .attr('xlink:href', function(d) {
+          if(d.friend) {
+            return 'images/delete_profile-128.png'
+          } else {
+            return 'images/add_friend-128.png'
+          }
+        })
+      .attr('class', function(d) {
+        if(d.friend) {
+          return 'remove';
+        } else {
+          return 'add';
+        }
+      });
+
+    //remove
     messages
       .exit().remove();
 
