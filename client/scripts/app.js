@@ -31,6 +31,8 @@ var app = {
     $.ajax({
       url: this.server,
       type: 'GET',
+      data: 'where={"updatedAt":{"$gte": "2014-09-22T00:00:00.000Z"}}',
+      contentType: 'application/json',
       success: app.update,
       error: function(jqXHR, status, error) {
         console.log(error);
@@ -72,10 +74,24 @@ var app = {
       }
     }
 
-    var messages = app.svg.selectAll('.message').data(data);
+    var messages = app.svg.selectAll('.message').data(data, function(d) { return d.objectId;});
     messages.enter()
       .append('g').attr('class', 'message')
       .attr('transform', function(d,i){return 'translate(0,' + (20 * (i + 1)) + ')';})
       .append('text').text(function(d){return JSON.stringify(d);});
+  },
+
+  clearMessages: function(){
+    app.svg.selectAll('.message').data([]).exit().remove();
+  },
+
+  addMessage: function(input){
+    app.send(input);
+    app.update();
   }
+
+
+
+
+
 };
