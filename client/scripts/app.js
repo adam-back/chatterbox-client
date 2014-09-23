@@ -8,15 +8,17 @@ var app = {
       app.fetch();
     });
 
-    $('.add').click(function(e) {
-      e.preventDefault();
-      console.log("wi");
-    });
+
 
     app.svg = d3.select('#canvas').append('svg')
       .attr('height', $(window).height() * 0.75)
       .attr('width', 500)
       .attr('id', 'chats');
+
+    $('#chats').on('click', '.add', function(e) {
+      e.preventDefault();
+      app.addFriend($(this).parent().find('.username').text());
+    });
 
     $('.send').on('click', function(e) {
       e.preventDefault();
@@ -73,6 +75,7 @@ var app = {
       cleaned.createdAt = message.createdAt;
       cleaned.objectId = message.objectId;
       cleaned.updatedAt = message.updatedAt;
+      cleaned.friend = app.hasFriend(cleaned.username);
 
       return cleaned;
     } else {
@@ -95,12 +98,30 @@ var app = {
     var messages = app.svg.selectAll('.message').data(data, function(d) { return d.objectId;});
     var enteringMessages = messages.enter()
       .append('g').attr('class', 'message')
+
+    //message text
     enteringMessages
       .append('text').attr('class', 'text');
+
+    //friend icon
     enteringMessages
-      .append('image').attr('xlink:href', 'images/add_friend-128.png').attr('class', 'add').attr('width', '15').attr('height', '15');
+      .append('image')
+      .attr('xlink:href', function(d) {
+        if(d.friend) {
+          return 'images/delete_profile-128.png'
+        } else {
+          return 'images/add_friend-128.png'
+        }
+      })
+      .attr('class', 'add')
+      .attr('width', '15')
+      .attr('height', '15');
+
+    //username
     enteringMessages
-      .append('text').attr('class', 'username');
+      .append('text').attr('class', 'username').attr('font-weight', function(d) {if(d.friend) {return "800";} else {return '400';}});
+
+    //roomname
     enteringMessages
       .append('text').attr('class', 'roomname');
 
