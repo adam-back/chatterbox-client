@@ -1,10 +1,15 @@
-// YOUR CODE HERE:
+  // YOUR CODE HERE:
 var app = {
   init: function(){
     //handlers
 
     $('.fetch').on('click', function() {
       app.fetch();
+    });
+
+    $('text').on('click', '.username', function(e) {
+      e.preventDefault();
+
     });
 
     app.svg = d3.select('#canvas').append('svg')
@@ -120,10 +125,21 @@ var app = {
     var now = new Date();
     now.setUTCHours(now.getUTCHours() - 1);
     return now.toISOString();
+  },
+
+  friends: [],
+
+  addFriend: function(username) {
+    app.friends.push(username);
+    return app.friends;
+  },
+
+  hasFriend: function(target) {
+    return app.friends.indexOf(target) > -1 ? true : false;
+  },
+
+  removeFriend: function(username) {
+    app.friends.splice(app.friends.indexOf(username), 1);
+    return app.friends;
   }
-
-
-
-
-
 };
