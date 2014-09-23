@@ -140,7 +140,7 @@ var app = {
       }
     }
 
-    app.updateRoomSelector(data);
+    app.updateRoomObject(data);
 
     app.svg.attr('height', data.length * app.messageHeight);
 
@@ -298,8 +298,7 @@ var app = {
     return app.friends;
   },
 
-  updateRoomSelector: function(data){
-    var rooms = [];
+  updateRoomObject: function(data){
 
     //search through data for room names
     for (var i = 0; i < data.length; i++){
@@ -309,6 +308,11 @@ var app = {
       }
     }
 
+    app.updateRoomSelector();
+  },
+
+ updateRoomSelector: function() {
+    var rooms = [];
     for (var key in app.rooms) {
       //add all the rooms into a rooms array
       rooms.push(key);
@@ -340,11 +344,14 @@ var app = {
     }
   },
 
-  createRoom: function(roomName) {
+  // createRoom: function(roomName) {
+  //   app.send({
+  //     text: null,
+  //     username: document.URL.replace(/.+username=(.+)/, '$1'),
+  //     roomname: roomName
+  //   });
 
-
-
-  }
+  // }
 
 
 
