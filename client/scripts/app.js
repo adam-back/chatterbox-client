@@ -8,8 +8,6 @@ var app = {
       app.fetch();
     });
 
-
-
     app.svg = d3.select('#canvas').append('svg')
       .attr('height', $(window).height() * 0.75)
       .attr('width', 500)
@@ -19,6 +17,11 @@ var app = {
       e.preventDefault();
       app.addFriend($(this).parent().find('.username').text());
     });
+
+    $('#chats').on('click', '.remove', function(e) {
+          e.preventDefault();
+          app.removeFriend($(this).parent().find('.username').text());
+        });
 
     $('.send').on('click', function(e) {
       e.preventDefault();
@@ -183,19 +186,19 @@ var app = {
     return now.toISOString();
   },
 
-  friends: [],
+  friends: {},
 
   addFriend: function(username) {
-    app.friends.push(username);
+    app.friends[username] = true;
     return app.friends;
   },
 
-  hasFriend: function(target) {
-    return app.friends.indexOf(target) > -1 ? true : false;
+  hasFriend: function(username) {
+    return app.friends[username] ? true : false;
   },
 
   removeFriend: function(username) {
-    app.friends.splice(app.friends.indexOf(username), 1);
+    delete app.friends[username];
     return app.friends;
   }
 };
