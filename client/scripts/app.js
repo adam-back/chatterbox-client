@@ -56,7 +56,7 @@ var app = {
 
     $('button.newroom').on('click', function(e) {
       e.preventDefault();
-      app.createRoom($('input.newroom').text());
+      app.createRoom($('input.newroom').val());
     })
   },
 
@@ -344,14 +344,14 @@ var app = {
     }
   },
 
-  // createRoom: function(roomName) {
-  //   app.send({
-  //     text: null,
-  //     username: document.URL.replace(/.+username=(.+)/, '$1'),
-  //     roomname: roomName
-  //   });
-
-  // }
+  createRoom: function(roomName) {
+      //manually add to object
+      app.rooms[roomName] = true;
+      //call updateRoomSelector()
+      app.updateRoomSelector();
+      //change option on bar to reflect room change using jQuery, re 324, 343
+      $('.room-selector').val(roomName);
+  }
 
 
 
