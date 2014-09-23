@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "dependencies": {
     "jquery": "~2.0.3",
-    "jQuery": "~2.1.1",
     "d3": "~3.4.11",
     "underscore": "~1.7.0"
   },
