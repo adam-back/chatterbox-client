@@ -6,7 +6,7 @@ body {
 }
 
 #main {
-    width: 500px;
+    width: 800px;
     margin: auto;
     text-align: left;
     background: white;
@@ -86,6 +86,11 @@ form input[type=text] {
 image {
     width: 15;
     height: 15;
+}
+
+#canvas {
+    width: 680px;
+    overflow-x: hidden;
 }
 /*.message {
     stroke: lightblue;

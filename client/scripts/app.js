@@ -1,5 +1,9 @@
   // YOUR CODE HERE:
 var app = {
+
+  messageHeight: 102,
+
+
   init: function(){
     //handlers
     app.fetch();
@@ -9,8 +13,8 @@ var app = {
     });
 
     app.svg = d3.select('#canvas').append('svg')
-      .attr('height', $(window).height() * 0.75)
-      .attr('width', 500)
+      //.attr('height', $(window).height() * 0.75)
+      .attr('width', '680')
       .attr('id', 'chats');
 
     $('#chats').on('click', '.add', function(e) {
@@ -97,6 +101,9 @@ var app = {
         data.splice(i, 1);
       }
     }
+
+    app.svg.attr('height', data.length * app.messageHeight);
+
     // update
     var messages = app.svg.selectAll('.message').data(data, function(d) { return d.objectId;});
     //entering
@@ -124,7 +131,7 @@ var app = {
     //update + entering
     //message text
     messages
-      .attr('transform', function(d,i){return 'translate(0,' + (102 * (i + 1)) + ')';})
+      .attr('transform', function(d,i){return 'translate(0,' + (app.messageHeight * (i + 1)) + ')';})
       .select('.text')
       .text(function(d){return "'" + d['text'] + "'"})
       .attr('transform', 'translate(50, 30)');
