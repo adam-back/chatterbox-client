@@ -1,10 +1,16 @@
-// YOUR CODE HERE:
+  // YOUR CODE HERE:
 var app = {
   init: function(){
     //handlers
+    app.fetch();
 
     $('.fetch').on('click', function() {
       app.fetch();
+    });
+
+    $('.add').click(function(e) {
+      e.preventDefault();
+      console.log("wi");
     });
 
     app.svg = d3.select('#canvas').append('svg')
@@ -92,15 +98,17 @@ var app = {
     enteringMessages
       .append('text').attr('class', 'text');
     enteringMessages
+      .append('image').attr('xlink:href', 'images/add_friend-128.png').attr('class', 'add').attr('width', '15').attr('height', '15');
+    enteringMessages
       .append('text').attr('class', 'username');
     enteringMessages
       .append('text').attr('class', 'roomname');
 
     messages
-      .attr('transform', function(d,i){return 'translate(0,' + (70 * (i + 1)) + ')';})
-      .select('.text').text(function(d){return "'" + d['text'] + "'"}).attr('transform', 'translate(100, 20)');
-      messages.select('.username').text(function(d){return d['username']}).attr('font-weight', '800');
-      messages.select('.roomname').text(function(d){return "Room Name: " + d['roomname'] }).attr('transform', function(d,i){return 'translate(0,40)';}).attr('fill', 'grey').attr('size', '8');
+      .attr('transform', function(d,i){return 'translate(0,' + (102 * (i + 1)) + ')';})
+      .select('.text').text(function(d){return "'" + d['text'] + "'"}).attr('transform', 'translate(50, 30)');
+      messages.select('.username').text(function(d){return d['username']}).attr('transform', 'translate(20, 12)');
+      messages.select('.roomname').text(function(d){return "Room Name: " + d['roomname'] }).attr('transform', function(d,i){return 'translate(300,60)';}).attr('fill', 'grey').attr('size', '8');
 
     messages
       .exit().remove();
@@ -120,10 +128,21 @@ var app = {
     var now = new Date();
     now.setUTCHours(now.getUTCHours() - 1);
     return now.toISOString();
+  },
+
+  friends: [],
+
+  addFriend: function(username) {
+    app.friends.push(username);
+    return app.friends;
+  },
+
+  hasFriend: function(target) {
+    return app.friends.indexOf(target) > -1 ? true : false;
+  },
+
+  removeFriend: function(username) {
+    app.friends.splice(app.friends.indexOf(username), 1);
+    return app.friends;
   }
-
-
-
-
-
 };
