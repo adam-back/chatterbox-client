@@ -2,10 +2,13 @@
 var app = {
 
   messageHeight: 102,
-
+  rooms: {lobby: true},
 
   init: function(){
     //handlers
+
+    $('#sidebar').scrollFixed();
+
     app.fetch();
 
     $('.fetch').on('click', function() {
@@ -13,7 +16,7 @@ var app = {
     });
 
     app.svg = d3.select('#canvas').append('svg')
-      .attr('width', '680')
+      .attr('width', '100%')
       .attr('id', 'chats');
 
     $('#chats').on('click', '.add', function(e) {
@@ -30,11 +33,14 @@ var app = {
 
     $('.send').on('click', function(e) {
       e.preventDefault();
-
+      var room = $('.room-selector').val();
+      if (room === 'all'){
+        room = 'lobby';
+      }
       var message = {};
         message.text = $('input').val();
         message.username = document.URL.replace(/.+username=(.+)/, '$1');
-        message.roomname = 'lobby';
+        message.roomname = room;
 
       app.send(message);
       setTimeout(function(){app.fetch()}, 1000);
@@ -100,9 +106,9 @@ var app = {
        message.username !== undefined && message.username !== 'undefined' && $.trim(message.username) !== ''){
       var cleaned = {};
       // start with dirty text, e.g., message.text
-      cleaned.text = $('<span></span>').text($.trim(_.escape(message.text))).html();
-      cleaned.roomname = $('<span></span>').text($.trim(_.escape(message.roomname))).html();
-      cleaned.username = $('<span></span>').text($.trim(_.escape(message.username))).html();
+      cleaned.text = message.text;
+      cleaned.roomname = message.roomname;
+      cleaned.username = message.username;
       cleaned.createdAt = message.createdAt;
       cleaned.objectId = message.objectId;
       cleaned.updatedAt = message.updatedAt;
@@ -136,6 +142,17 @@ var app = {
     //entering
     var enteringMessages = messages.enter()
       .append('g').attr('class', 'message')
+      .attr('transform', 'translate(0,' + -app.messageHeight + ')');
+
+    enteringMessages
+      .append('rect')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('rx', 15)
+      .attr('ry', 15)
+      .attr('width', '100%')
+      .attr('height', app.messageHeight - 10)
+      .attr('class', 'message-box');
 
     //message text
     enteringMessages
@@ -143,9 +160,12 @@ var app = {
 
     //friend icon
     enteringMessages
-      .append('image')
-      .attr('width', '15')
-      .attr('height', '15');
+      .append('text')
+      .attr('class', 'icon')
+      //.append('image')
+      //.attr('class', 'friend-image')
+      //.attr('width', '15')
+      //.attr('height', '15');
 
     //username
     enteringMessages
@@ -153,20 +173,28 @@ var app = {
 
     //roomname
     enteringMessages
-      .append('text').attr('class', 'roomname');
+      .append('text').attr('class', 'roomname')
 
     //update + entering
+    // svg group elements
+    messages
+      .transition()
+      .duration(750)
+      .ease('linear')
+      .attr('transform', function(d, i){
+        return 'translate(0,' + (app.messageHeight * i) + ')';
+      });
+
     //message text
     messages
-      .attr('transform', function(d,i){return 'translate(0,' + (app.messageHeight * (i + 1)) + ')';})
       .select('.text')
       .text(function(d){return "'" + d['text'] + "'"})
-      .attr('transform', 'translate(50, 30)');
+      .attr('transform', 'translate(50, 50)');
 
     //username
     messages.select('.username')
     .text(function(d){return d['username']})
-    .attr('transform', 'translate(20, 12)')
+    .attr('transform', 'translate(30, 30)')
     .attr('font-weight',
       function(d) {
         if(d.friend) {
@@ -174,7 +202,30 @@ var app = {
         } else {
           return '400';
         }
-      });
+      })
+    .attr('class', function(d){
+      if (d.friend){
+        return 'username remove';
+      } else {
+        return 'username add';
+      }
+    });
+
+    messages.select('.icon').text(function(d){
+      if (d.friend){
+        return '\uf068';
+      } else {
+        return '\uf067';
+      }
+    })
+      .attr('class', function(d){
+        if (d.friend){
+          return 'icon remove';
+        } else {
+          return 'icon add';
+        }
+      })
+      .attr('transform', 'translate(15, 30)');
 
     //Room Name
     messages.select('.roomname')
@@ -185,21 +236,23 @@ var app = {
     .attr('fill', 'grey').attr('size', '8');
 
     // add/remove friend image
-    messages.select('image')
-      .attr('xlink:href', function(d) {
-          if(d.friend) {
-            return 'images/delete_profile-128.png'
-          } else {
-            return 'images/add_friend-128.png'
-          }
-        })
-      .attr('class', function(d) {
-        if(d.friend) {
-          return 'remove';
-        } else {
-          return 'add';
-        }
-      });
+    // messages.select('.friend-image')
+    //   .attr('xlink:href', function(d) {
+    //       if(d.friend) {
+    //         return 'images/delete_profile-128.png'
+    //       } else {
+    //         return 'images/add_friend-128.png'
+    //       }
+    //     })
+    //   .attr('class', function(d) {
+    //     if(d.friend) {
+    //       return 'friend-image remove';
+    //     } else {
+    //       return 'friend-image add';
+    //     }
+    //   })
+    //   .attr('transform', 'translate(10, 18)');
+
 
     //remove
     messages
@@ -239,26 +292,26 @@ var app = {
   },
 
   updateRoomSelector: function(data){
+    for (var i = 0; i < data.length; i++){
+      if (data[i].roomname !== undefined && $.trim(data[i].roomname) !== '')
+      app.rooms[data[i].roomname] = true;
+    }
+    var rooms = [];
+    for (var key in app.rooms){
+      rooms.push(key);
+    }
+    rooms = rooms.sort();
+
     var el = $('.room-selector');
     var oldValue = el.val();
     el.find('option')
       .remove()
       .end()
-      .append('<option value="all">All Rooms</option>')
-    var rooms = {};
-    app.roomNames = [];
-    for (var i = 0; i < data.length; i++){
-      if (data[i].roomname !== undefined && $.trim(data[i].roomname) !== '')
-      rooms[$.trim(data[i].roomname)] = true;
+      .append('<option value="all">All Rooms</option>');
+    for (i = 0; i < rooms.length; i++){
+      el.append('<option value="' + rooms[i] + '">' + rooms[i] + '</option>')
     }
-    for (var key in rooms){
-      app.roomNames.push(key);
-    }
-    app.roomNames = app.roomNames.sort();
-    for (i = 0; i < app.roomNames.length; i++){
-      el.append('<option value="' + app.roomNames[i] + '">' + app.roomNames[i] + '</option>')
-    }
-    if (app.roomNames.indexOf(oldValue) >= 0){
+    if (rooms.indexOf(oldValue) >= 0){
       el.val(oldValue);
     } else {
       el.val('all');
@@ -291,9 +344,9 @@ var app = {
 
     $(window).scroll(function(){
       if( $(window).scrollTop() > distanceTop && $(window).scrollTop() < bottom ) {
-        element.css({'position':'fixed', 'top':'5px'});
+        element.css({'position':'fixed', 'top':'10px'});
       } else {
-        element.css({'position':'static'});
+        element.css({'position':'absolute'});
       }
     });
   };

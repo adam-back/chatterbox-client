@@ -89,7 +89,6 @@ image {
 }
 
 #canvas {
-    width: 680px;
     overflow-x: hidden;
 }
 
@@ -99,6 +98,25 @@ image {
     top: 10px;
     position: absolute;
 }
+
+.message-box{
+    fill: lightblue;
+    stroke: blue;
+    stroke-width: 1px;
+}
+
+.icon {
+    font-family: FontAwesome;
+}
+
+.text {
+    fill: black;
+}
+
+.add, .remove{
+    cursor: pointer;
+}
+
 /*.message {
     stroke: lightblue;
     stroke-width: 1px;
