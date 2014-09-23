@@ -11,6 +11,18 @@ var app = {
       .attr('height', $(window).height() * 0.75)
       .attr('width', 500)
       .attr('id', 'chats');
+
+    $('.send').on('click', function(e) {
+      e.preventDefault();
+
+      var message = {};
+        message.text = $('input').val();
+        message.username = document.URL.replace(/.+username=(.+)/, '$1');
+        message.room = 'lobby';
+
+      app.send(message);
+      setTimeout(function(){app.fetch()}, 1000);
+    })
   },
 
   send: function(data){
@@ -31,7 +43,7 @@ var app = {
     $.ajax({
       url: this.server,
       type: 'GET',
-      data: 'where={"updatedAt":{"$gte":{"__type":"Date","iso":"' + app.lastHour() +'"}}}',
+      data: 'where={"updatedAt":{"$gte":{"__type":"Date","iso":"' + app.lastHour() +'"}}}&order=-createdAt',
       contentType: 'application/json',
       success: app.update,
       error: function(jqXHR, status, error) {
@@ -77,8 +89,13 @@ var app = {
     var messages = app.svg.selectAll('.message').data(data, function(d) { return d.objectId;});
     messages.enter()
       .append('g').attr('class', 'message')
+      .append('text');
+    messages
       .attr('transform', function(d,i){return 'translate(0,' + (20 * (i + 1)) + ')';})
-      .append('text').text(function(d){return JSON.stringify(d);});
+      .select('text').text(function(d){return JSON.stringify(d);});
+    messages
+      .exit().remove();
+
   },
 
   clearMessages: function(){
