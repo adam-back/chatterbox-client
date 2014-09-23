@@ -31,6 +31,7 @@ var app = {
       app.fetch();
     });
 
+    //sends message on button click based on current room selection
     $('.send').on('click', function(e) {
       e.preventDefault();
       var room = $('.room-selector').val();
@@ -43,6 +44,7 @@ var app = {
         message.roomname = room;
 
       app.send(message);
+      //wait for a period so message will fetch
       setTimeout(function(){app.fetch()}, 1000);
       $('input').val("");
     });
@@ -50,6 +52,11 @@ var app = {
     $('.room-selector').on('change', function(e){
       e.preventDefault();
       app.fetch();
+    })
+
+    $('button.newroom').on('click', function(e) {
+      e.preventDefault();
+      app.createRoom($('input.newroom').text());
     })
   },
 
@@ -292,30 +299,51 @@ var app = {
   },
 
   updateRoomSelector: function(data){
-    for (var i = 0; i < data.length; i++){
-      if (data[i].roomname !== undefined && $.trim(data[i].roomname) !== '')
-      app.rooms[data[i].roomname] = true;
-    }
     var rooms = [];
-    for (var key in app.rooms){
+
+    //search through data for room names
+    for (var i = 0; i < data.length; i++){
+      if (data[i].roomname !== undefined && $.trim(data[i].roomname) !== '') {
+      //set rooms object to key (roomname), value true
+      app.rooms[data[i].roomname] = true;
+      }
+    }
+
+    for (var key in app.rooms) {
+      //add all the rooms into a rooms array
       rooms.push(key);
     }
+    //sort the array
     rooms = rooms.sort();
 
+    //dropdown bar
     var el = $('.room-selector');
+
+    //store values from old bar
     var oldValue = el.val();
+    //clear bar
     el.find('option')
       .remove()
       .end()
       .append('<option value="all">All Rooms</option>');
+
+    //iterate through rooms array
     for (i = 0; i < rooms.length; i++){
+      //add options to the bar
       el.append('<option value="' + rooms[i] + '">' + rooms[i] + '</option>')
     }
+
     if (rooms.indexOf(oldValue) >= 0){
       el.val(oldValue);
     } else {
       el.val('all');
     }
+  },
+
+  createRoom: function(roomName) {
+
+
+
   }
 
 
