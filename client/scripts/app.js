@@ -31,7 +31,7 @@ var app = {
     $.ajax({
       url: this.server,
       type: 'GET',
-      data: 'where={"updatedAt":{"$gte": "2014-09-22T00:00:00.000Z"}}',
+      data: 'where={"updatedAt":{"$gte":{"__type":"Date","iso":"' + app.lastHour() +'"}}}',
       contentType: 'application/json',
       success: app.update,
       error: function(jqXHR, status, error) {
@@ -88,6 +88,12 @@ var app = {
   addMessage: function(input){
     app.send(input);
     app.update();
+  },
+
+  lastHour: function() {
+    var now = new Date();
+    now.setUTCHours(now.getUTCHours() - 1);
+    return now.toISOString();
   }
 
 
