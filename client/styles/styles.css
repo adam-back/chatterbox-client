@@ -82,3 +82,16 @@ form input[type=text] {
 .spinner img {
     padding: 10px;
 }
+
+.roomname {
+    font-size: 10px;
+}
+
+/*.message {
+    stroke: lightblue;
+    stroke-width: 1px;
+    fill: transparent;
+    width: 500;
+    height: 22;
+}
+*/

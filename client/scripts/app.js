@@ -18,10 +18,11 @@ var app = {
       var message = {};
         message.text = $('input').val();
         message.username = document.URL.replace(/.+username=(.+)/, '$1');
-        message.room = 'lobby';
+        message.roomname = 'lobby';
 
       app.send(message);
       setTimeout(function(){app.fetch()}, 1000);
+      $('input').val("");
     })
   },
 
@@ -69,7 +70,6 @@ var app = {
 
       return cleaned;
     } else {
-
       return null;
     }
   },
@@ -87,12 +87,21 @@ var app = {
     }
 
     var messages = app.svg.selectAll('.message').data(data, function(d) { return d.objectId;});
-    messages.enter()
+    var enteringMessages = messages.enter()
       .append('g').attr('class', 'message')
-      .append('text');
+    enteringMessages
+      .append('text').attr('class', 'text');
+    enteringMessages
+      .append('text').attr('class', 'username');
+    enteringMessages
+      .append('text').attr('class', 'roomname');
+
     messages
-      .attr('transform', function(d,i){return 'translate(0,' + (20 * (i + 1)) + ')';})
-      .select('text').text(function(d){return JSON.stringify(d);});
+      .attr('transform', function(d,i){return 'translate(0,' + (70 * (i + 1)) + ')';})
+      .select('.text').text(function(d){return "'" + d['text'] + "'"}).attr('transform', 'translate(100, 20)');
+      messages.select('.username').text(function(d){return d['username']}).attr('font-weight', '800');
+      messages.select('.roomname').text(function(d){return "Room Name: " + d['roomname'] }).attr('transform', function(d,i){return 'translate(0,40)';}).attr('fill', 'grey').attr('size', '8');
+
     messages
       .exit().remove();
 
