@@ -13,19 +13,20 @@ var app = {
     });
 
     app.svg = d3.select('#canvas').append('svg')
-      //.attr('height', $(window).height() * 0.75)
       .attr('width', '680')
       .attr('id', 'chats');
 
     $('#chats').on('click', '.add', function(e) {
       e.preventDefault();
       app.addFriend($(this).parent().find('.username').text());
+      app.fetch();
     });
 
     $('#chats').on('click', '.remove', function(e) {
-          e.preventDefault();
-          app.removeFriend($(this).parent().find('.username').text());
-        });
+      e.preventDefault();
+      app.removeFriend($(this).parent().find('.username').text());
+      app.fetch();
+    });
 
     $('.send').on('click', function(e) {
       e.preventDefault();
