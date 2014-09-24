@@ -49,16 +49,21 @@ var app = {
       $('input').val("");
     });
 
+    //select a new room using the dropdown menu
     $('.room-selector').on('change', function(e){
       e.preventDefault();
       app.fetch();
       $('input.newroom').val("")
     })
 
+    //add a new room via the input field and button
     $('button.newroom').on('click', function(e) {
       e.preventDefault();
       app.createRoom($('input.newroom').val());
     })
+
+    //automatic refreshing every 5 seconds
+    setInterval(function() {app.fetch();}, 5000);
   },
 
   send: function(data){
