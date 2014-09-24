@@ -52,6 +52,7 @@ var app = {
     $('.room-selector').on('change', function(e){
       e.preventDefault();
       app.fetch();
+      $('input.newroom').val("")
     })
 
     $('button.newroom').on('click', function(e) {
@@ -345,6 +346,8 @@ var app = {
   },
 
   createRoom: function(roomName) {
+    var inputChecker = /\w/g;
+    if(typeof roomName === 'string' && roomName.search(inputChecker) !== -1 && roomName !== 'Room Name') {
       //manually add to object
       app.rooms[roomName] = true;
       //call updateRoomSelector()
@@ -353,6 +356,7 @@ var app = {
       $('.room-selector').val(roomName);
       //updates page to reflect new room name
       app.fetch();
+    }
   }
 
 
