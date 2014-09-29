@@ -34,7 +34,14 @@ var app = {
 			data: data,
 			success: function(data) {
 				console.log('Fetched successfully:' + data);
+				for(var i = 0; i < data.length; i++) {
+					app.addMessage(data[i]);
+				}
+			},
+			error: function(data) {
+				console.log('Error on fetch!');
 			}
+
 		});
 	},
 
@@ -42,6 +49,13 @@ var app = {
 		console.log('cleared')
 		//empty method clears all child nodes
 		$('#chats').empty();
+	},
+
+	addMessage: function(message) {
+		var user = $('<span></span>').text(message.username);
+		var message = $('<span></span>').text(message.text);	
+		var room = $('<span></span>').text(message.roomname);	
+		$('#chats').append('<span>Username:' + user[0] +': ' + message[0] + ' ' + room[0] + '</span>');
 	}
 
 }
