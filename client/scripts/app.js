@@ -4,7 +4,13 @@ var app = {
 	server: 'https://api.parse.com/1/classes/chatterbox',
 
 	init: function() {
-		$('button').on('click', '.clear', function() {app.clearMessages()});
+		$(document).ready(function() {
+	        $(".clear").click(function() {
+	          app.clearMessages();
+	        });
+      
+      	});
+
 		$('.fetch').on('click', app.fetch());	
 	},
 
@@ -33,8 +39,9 @@ var app = {
 	},
 
 	clearMessages: function() {
-		console.log('cleared');
-		$('div.messages').empty();
+		console.log('cleared')
+		//empty method clears all child nodes
+		$('#chats').empty();
 	}
 
 }
