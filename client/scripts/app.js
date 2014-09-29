@@ -2,9 +2,10 @@
 var app = {
 
 	server: 'https://api.parse.com/1/classes/chatterbox',
-	
-	init: function() {
 
+	init: function() {
+		$('button').on('click', '.clear', function() {app.clearMessages()});
+		$('.fetch').on('click', app.fetch());	
 	},
 
 	send: function(data) {
@@ -30,5 +31,10 @@ var app = {
 			}
 		});
 	},
+
+	clearMessages: function() {
+		console.log('cleared');
+		$('div.messages').empty();
+	}
 
 }
