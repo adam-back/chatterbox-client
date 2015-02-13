@@ -6,7 +6,7 @@ body {
 }
 
 #main {
-    width: 500px;
+    width: 800px;
     margin: auto;
     text-align: left;
     background: white;
@@ -65,10 +65,6 @@ form input[type=text] {
     background-color: #eee;
 }
 
-.chat .username {
-    font-weight: 800;
-}
-
 .chat:hover {
     background-color: #ddd;
 }
@@ -82,3 +78,61 @@ form input[type=text] {
 .spinner img {
     padding: 10px;
 }
+
+.roomname {
+    font-size: 10px;
+}
+
+image {
+    width: 15;
+    height: 15;
+}
+
+#canvas {
+    overflow-x: hidden;
+}
+
+#sidebar {
+    width: 200px;
+    left: 10px;
+    top: 10px;
+    position: absolute;
+}
+
+.message-box{
+    fill: lightblue;
+    stroke: blue;
+    stroke-width: 1px;
+}
+
+.icon {
+    font-family: FontAwesome;
+}
+
+.text {
+    fill: black;
+}
+
+.add, .remove{
+    cursor: pointer;
+}
+
+input.newroom {
+    width: 100px;
+    height: 15px;
+    margin-top: 75px;
+    display: inline;
+}
+
+button.newroom {
+    display: inline;
+}
+
+/*.message {
+    stroke: lightblue;
+    stroke-width: 1px;
+    fill: transparent;
+    width: 500;
+    height: 22;
+}
+*/
